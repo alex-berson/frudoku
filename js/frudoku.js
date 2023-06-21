@@ -1,17 +1,17 @@
 let board, clues;
 let fruits = ['avocado','banana','blueberries','cherries','coconut','grapes','green-apple','kiwi','lemon','mango','melon','peach','pear','pineapple','red-apple','strawberry','tangerine','watermelon'];
 
-// if ('serviceWorker' in navigator) {
-//     window.addEventListener('load', () => {
-//         navigator.serviceWorker.register('service-worker.js')
-//             .then(reg => {
-//                 console.log('Service worker registered!', reg);
-//             })
-//             .catch(err => {
-//                 console.log('Service worker registration failed: ', err);
-//             });
-//     });
-// }
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js')
+            .then(reg => {
+                console.log('Service worker registered!', reg);
+            })
+            .catch(err => {
+                console.log('Service worker registration failed: ', err);
+            });
+    });
+}
 
 const initBoard = () => {
 
@@ -61,8 +61,6 @@ const setBoardSize = () => {
 const setClues = () => {
 
     clues = shuffle(fruits).slice(0, 6);
-
-    // clues = fruits;  //
 
     document.querySelectorAll('.selection .fruit').forEach((fruit, i) => {
         fruit.src = `images/fruits/${clues[i]}.svg`;
@@ -162,7 +160,7 @@ const puzzleSolvable = (board) => {
 
         tempBoard[row][col] = val;
 
-    } while(!puzzleSolved(tempBoard));
+    } while (!puzzleSolved(tempBoard));
 
     return true;
 }
@@ -193,7 +191,7 @@ const generatePuzzle = () => {
             }
         }
 
-    } while(!puzzleSolvable(tempBoard) || countFilled(tempBoard) != 12);
+    } while (!puzzleSolvable(tempBoard) || countFilled(tempBoard) != 12);
 
     board = tempBoard;
 }
@@ -210,7 +208,7 @@ const saveSolution = () => {
 
         tempBoard[row][col] = val;
 
-    } while(!puzzleSolved(tempBoard));
+    } while (!puzzleSolved(tempBoard));
 
     let cells = document.querySelectorAll('.cell');
 
@@ -371,9 +369,6 @@ const firework = () => {
 
             document.querySelector('.board').addEventListener(event, newGame);
             clearInterval(zoomInterval);
-
-            // previewEnd(); //
-
             return;
         }
 
@@ -429,42 +424,15 @@ const init = () => {
 
     disableTapZoom();
     setBoardSize();
-    preloadImages();
-      
-    let t0 = performance.now(); //
-
     initBoard();
-
-    // initBoard2();
-
     setClues();
-
-
     generatePuzzle();
     saveSolution(); 
-
-    let t1 = performance.now(); //
-
     fillBoard();
     showBoard();
     enableTouch();
     enableSelection();
-
-    // puzzleSolvable(board, true); //
-
-    console.log(t1 - t0); //
-   
-    // setTimeout(play, 2000);
-
-    // setTimeout(preview1, 2000);
-
-    // setTimeout(preview2, 2000);
-
-    // setTimeout(screenShot1, 2000);
-
-    // setTimeout(screenShot2, 2000);
-
-    // setTimeout(fillAll, 2000);
+    preloadImages();  
 }
 
-window.onload = () => document.fonts.ready.then(init());
+window.onload = () => document.fonts.ready.then(setTimeout(init, 500));

@@ -1,7 +1,7 @@
+MIT License
+
 This license applies only to the software code contained in this project and 
 does not cover the associated image files.
-
-MIT License
 
 Copyright (c) 2023 Alexander Berson
 

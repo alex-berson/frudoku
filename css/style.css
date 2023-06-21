@@ -11,8 +11,6 @@
 
 :root {
     --board-size: 0.84;
-    /* --font-size: 50px; */
-    /* --border-size: 10px; */
     --color1: #f4000d;
     --color2: #ffa000;
     --color3: #ffe653;
@@ -50,8 +48,6 @@ body {
 h1 {
     text-align: center;
     font-size: calc(var(--board-size) / 3.36);
-    /* font-size: var(--font-size); */
-
     margin-top: -10px;
     margin-bottom: 8px;
 }
@@ -79,12 +75,6 @@ body:hover {
 }
 
 .selection .fruit {
-    /* display: grid; */
-    /* position: relative;  */
-    /* grid-column: 1; */
-    /* grid-row: 1; */
-    /* place-items: center; */
-    /* align-content: center; */
     width: calc(var(--board-size) / 9);
     height: calc(var(--board-size) / 9);
     opacity: 1;
@@ -127,10 +117,7 @@ body:hover {
 .cell {
     display: grid;
     place-items: center;
-    /* justify-content: center; */
-    /* align-content: center; */
     color: white;
-    /* font-size: 3.5em; */
     background-color: white;
     width: calc(var(--board-size) / 6 - 1px);
     height: calc(var(--board-size) / 6 - 1px);
@@ -175,13 +162,6 @@ body:hover {
     color: white;
     font-size: 0.55em; 
     margin-top: -1.33em;
-    /* margin-top: calc(var(--board-size) + 0.15em); */
-    /* margin-top: calc(var(--board-size) + var(--board-size) / 270); */
-    /* margin-top: calc(var(--board-size) + 1.2px); */
-    /* margin-top: -1.3em; */
-    /* margin-top: -0.3em; */
-    /* margin-top: -0.74rem; */
-    /* margin-top: -11.5px; */
 }
 
 @keyframes incorrect {
@@ -219,12 +199,6 @@ body:hover {
 .zoom img {
     animation: zoom 0.4s ease-in-out forwards;
 }
-
-/* .zoom img {
-    opacity: 0;
-    transform: scale(2);
-    transition: all 0.5s ease-out;
-} */
 
 @media (prefers-color-scheme: dark) {
 
@@ -270,14 +244,10 @@ body:hover {
 
     :root {
         --board-size-big: 400px;
-        /* --border-size: 15px; */
-
     }
 
     h1 {
         font-size: 7.55em;
-
-        /* font-size: var(--font-size); */
     }
 
     .selection {
@@ -318,6 +288,5 @@ body:hover {
     #designed {
         font-size: 0.8em; 
         margin-top: -1.3em;
-        /* margin-top: calc(var(--board-size-big) + 2px); */
     }
 }
