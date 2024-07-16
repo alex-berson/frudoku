@@ -1,6 +1,6 @@
-const cacheName = 'cache-v1';
+const cacheName = 'cache-v2';
 const files = [
-  'https://alex-berson.github.io/frudoku/',
+  '/',
   'index.html',
   'css/style.css',
   'js/frudoku.js',
@@ -22,8 +22,8 @@ const files = [
   'images/fruits/strawberry.svg',
   'images/fruits/tangerine.svg',
   'images/fruits/watermelon.svg',
-  'fonts/roboto-regular-webfont.woff',
-  'fonts/roboto-bold-webfont.woff'
+  'fonts/roboto-regular.woff',
+  'fonts/roboto-bold.woff'
 ];
 
 self.addEventListener('install', event => {

@@ -1,17 +1,6 @@
+let size = 6;
 let board, clues;
 let fruits = ['avocado','banana','blueberries','cherries','coconut','grapes','green-apple','kiwi','lemon','mango','melon','peach','pear','pineapple','red-apple','strawberry','tangerine','watermelon'];
-
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('service-worker.js')
-            .then(reg => {
-                console.log('Service worker registered!', reg);
-            })
-            .catch(err => {
-                console.log('Service worker registration failed: ', err);
-            });
-    });
-}
 
 const initBoard = () => {
 
@@ -24,8 +13,6 @@ const initBoard = () => {
 }
 
 const showBoard = () => document.body.style.opacity = 1;
-
-const touchScreen = () => matchMedia('(hover: none)').matches;
 
 const preloadImages = () => {
 
@@ -52,15 +39,15 @@ const shuffle = (array) => {
 const setBoardSize = () => {
 
     let minSide = screen.height > screen.width ? screen.width : window.innerHeight;
-    let cssBoardSize = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--board-size'));
-    let boardSize = Math.ceil(minSide * cssBoardSize / 6) * 6;
+    let cssBoardSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--board-size')) / 100;
+    let boardSize = Math.ceil(minSide * cssBoardSize / size) * size;
 
     document.documentElement.style.setProperty('--board-size', boardSize + 'px');
 }
 
 const setClues = () => {
 
-    clues = shuffle(fruits).slice(0, 6);
+    clues = shuffle(fruits).slice(0, size);
 
     document.querySelectorAll('.selection .fruit').forEach((fruit, i) => {
         fruit.src = `images/fruits/${clues[i]}.svg`;
@@ -69,8 +56,8 @@ const setClues = () => {
 
 const puzzleSolved = (board) => {
 
-    for (let row = 0; row < 6; row++) {
-        for (let col = 0; col < 6; col++) {
+    for (let row = 0; row < size; row++) {
+        for (let col = 0; col < size; col++) {
             if (board[row][col] == 0) return false;
         }
     }
@@ -83,7 +70,7 @@ const validFruit = (board, row, col, val) => {
     let boxRow = Math.trunc(row / 2) * 2;
     let boxCol = Math.trunc(col / 3) * 3;
 
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < size; i++) {
 
         if (board[row][i] == val || board[i][col] == val) return false;
 
@@ -98,14 +85,14 @@ const validFruit = (board, row, col, val) => {
 
 const checkRegs = (board) => {
 
-    for (let reg = 0; reg < 6; reg++) {
-        valLoop: for (let val = 1; val <= 6; val++) {
+    for (let reg = 0; reg < size; reg++) {
+        valLoop: for (let val = 1; val <= size; val++) {
 
             let r, c; 
             let boxRow = Math.trunc(reg / 2) * 2;
             let boxCol = reg % 2 * 3;
 
-            for (let cell = 0; cell < 6; cell++) {
+            for (let cell = 0; cell < size; cell++) {
 
                 let row = boxRow + Math.trunc(cell / 3);
                 let col = boxCol + cell % 3;
@@ -128,7 +115,7 @@ const findFruit = (board) => {
 
     let row, col, val;
 
-    [row, col, val, num] = checkRegs(board);
+    [row, col, val] = checkRegs(board);
 
     if (row != null) return [row, col, val];
 
@@ -139,8 +126,8 @@ const countFilled = (board) => {
 
     let n = 0;
 
-    for (let row = 0; row < 6; row++) {
-        for (let col = 0; col < 6; col++) {
+    for (let row = 0; row < size; row++) {
+        for (let col = 0; col < size; col++) {
             if (board[row][col] != 0) n++;
         }
     }
@@ -171,7 +158,7 @@ const generatePuzzle = () => {
 
     do {
 
-        let cells = Array.from({length: 36}, (_, i) => i);
+        let cells = Array.from({length: size ** 2}, (_, i) => i);
         let clues = [1,1,2,2,3,3,4,4,5,5,6,6];
         tempBoard = board.map(arr => arr.slice());
 
@@ -180,7 +167,7 @@ const generatePuzzle = () => {
         for (let clue of clues) {
             for (let cell of cells) {
 
-                let [row, col] = [Math.trunc(cell / 6), cell % 6];
+                let [row, col] = [Math.trunc(cell / size), cell % size];
 
                 if (tempBoard[row][col] != 0) continue;
 
@@ -191,7 +178,7 @@ const generatePuzzle = () => {
             }
         }
 
-    } while (!puzzleSolvable(tempBoard) || countFilled(tempBoard) != 12);
+    } while (!puzzleSolvable(tempBoard) || countFilled(tempBoard) != size * 2);
 
     board = tempBoard;
 }
@@ -212,9 +199,9 @@ const saveSolution = () => {
 
     let cells = document.querySelectorAll('.cell');
 
-    for (let row = 0; row < 6; row++) {
-        for (let col = 0; col < 6; col++) {
-            cells[row * 6 + col].dataset.val = tempBoard[row][col];
+    for (let row = 0; row < size; row++) {
+        for (let col = 0; col < size; col++) {
+            cells[row * size + col].dataset.val = tempBoard[row][col];
         }
     }
 }
@@ -222,7 +209,7 @@ const saveSolution = () => {
 const fillBoard = () => {
 
     let board1D = board.flat();
-    let cells = document.querySelectorAll('.cell')
+    let cells = document.querySelectorAll('.cell');
     
     for (let cell of cells) {
 
@@ -240,7 +227,7 @@ const cellCoords = (touchedCell) => {
     let cells = document.querySelectorAll('.cell');
 
     for (let [i, cell] of cells.entries()) {
-        if (cell == touchedCell) return [Math.trunc(i / 6), i % 6];
+        if (cell == touchedCell) return [Math.trunc(i / size), i % size];
     }
 }
 
@@ -323,9 +310,8 @@ const selectFruit = (e) => {
 
 const newGame = () => {
 
-    let event = touchScreen() ? 'touchstart' : 'mousedown';
-
-    document.querySelector('.board').removeEventListener(event, newGame);
+    document.querySelector('.board').removeEventListener('touchstart', newGame);
+    document.querySelector('.board').removeEventListener('mousedown', newGame);
 
     document.querySelectorAll('.cell').forEach(cell => {
 
@@ -358,19 +344,10 @@ const firework = () => {
     let n = 0;
 
     let cells = document.querySelectorAll('.cell');
-    let order = Array.from({length: 36}, (_, i) => i);
+    let order = Array.from({length: size ** 2}, (_, i) => i);
     order = shuffle(order);
 
     const zoom = () => {
-
-        if (n > 35) {
-
-            let event = touchScreen() ? 'touchstart' : 'mousedown';
-
-            document.querySelector('.board').addEventListener(event, newGame);
-            clearInterval(zoomInterval);
-            return;
-        }
 
         cells[order[n]].classList.add('zoom');
 
@@ -381,8 +358,18 @@ const firework = () => {
             img.parentElement.classList.remove('zoom'); 
 
         }, {once: true});
+        
+        if (n >= size ** 2 - 1) {
 
-        n++;    
+            clearInterval(zoomInterval);
+
+            setTimeout(() => {
+                document.querySelector('.board').addEventListener('touchstart', newGame);
+                document.querySelector('.board').addEventListener('mousedown', newGame);
+            }, 400);
+        }
+
+        n++; 
     }
 
     let  zoomInterval = setInterval(zoom, 200);
@@ -391,37 +378,47 @@ const firework = () => {
 const enableTouch = () => {
 
     let cells = document.querySelectorAll('.cell');
-    let event = touchScreen() ? 'touchstart' : 'mousedown';
 
-    cells.forEach(cell => cell.addEventListener(event, selectCell));
+    cells.forEach(cell => {
+        cell.addEventListener('touchstart', selectCell);
+        cell.addEventListener('mousedown', selectCell);
+    });
 }
 
 const disableTouch = () => {
 
     let cells = document.querySelectorAll('.cell');
-    let event = touchScreen() ? 'touchstart' : 'mousedown';
 
-    cells.forEach(cell => cell.removeEventListener(event, selectCell));
+    cells.forEach(cell => {
+        cell.removeEventListener('touchstart', selectCell);
+        cell.removeEventListener('mousedown', selectCell);
+    });
 }
 
 const enableSelection = () => {
 
     let buttons = document.querySelectorAll('.button');
-    let event = touchScreen() ? 'touchstart' : 'mousedown';
 
-    buttons.forEach(button => button.addEventListener(event, selectFruit));
+    buttons.forEach(button => {
+        button.addEventListener('touchstart', selectFruit);
+        button.addEventListener('mousedown', selectFruit);
+    });
 }
 
 const disableTapZoom = () => {
 
     const preventDefault = (e) => e.preventDefault();
-    const event = touchScreen() ? 'touchstart' : 'mousedown';
 
-    document.body.addEventListener(event, preventDefault, {passive: false});
+    document.body.addEventListener('touchstart', preventDefault, {passive: false});
+    document.body.addEventListener('mousedown', preventDefault, {passive: false});
+}
+
+const registerServiceWorker = () => {
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('service-worker.js');
 }
 
 const init = () => {
-
+    registerServiceWorker();
     disableTapZoom();
     setBoardSize();
     initBoard();
@@ -435,4 +432,4 @@ const init = () => {
     preloadImages();  
 }
 
-window.onload = () => document.fonts.ready.then(setTimeout(init, 500));
+window.onload = () => document.fonts.ready.then(init);
